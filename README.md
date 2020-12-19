@@ -1,2 +1,2 @@
 # gitsu
-Git user management 
+Git user management written in python
