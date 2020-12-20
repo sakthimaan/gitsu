@@ -12,7 +12,7 @@ def get_choice(prompt, choices):
         align=5,
         margin=2,
         shift=0,
-        bullet="",
+        bullet="🡆",
         pad_right=5,
         return_index=False
     )

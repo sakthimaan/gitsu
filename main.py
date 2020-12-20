@@ -28,11 +28,11 @@ def applyProfile(config_file, profile_name):
         if ssh_key:
             parseSSHConfig(ssh_key)
         user_input.screen_clear()
-        print("git and ssh config has been updated. 🍻")
+        print(f"👍 Profile {profile_name} has been applied. ")
         print(40 * "-")
         print(f"Git:\n\t{gitUser}\n\t{gitEmail}\nssh:\n\t{ssh_key}")
     except Exception as e:
-        print("Error in setting Git config values", e)
+        print("😞 Error in setting Git config values", e)
 
 
 def create(config_file):
@@ -49,13 +49,13 @@ def create(config_file):
     profile_dict[profile_name]["user.ssh"] = prompt('    Enter git ssh key: ', completer=WordCompleter(ssh_keys))
     try:
         writeConfig(config_file, profile_dict)
-        toApply = input(f"Profile {profile_name} created. Do you want to apply[y]/n:")
-        if "n" in toApply.lower():
-            pass
+        toApply = input(f"Profile {profile_name} created. Do you want to apply y/[n]:")
+        if "n" in toApply.lower() or not toApply:
+            print(f"😈Profile {profile_name} is created, but not applied ")
         if "y" in toApply.lower():
             applyProfile(config_file, profile_name)
     except Exception as e:
-        print("Error in updating the config and key", e)
+        print("😞 Error in updating the config and key", e)
 
 
 def Delete(config_file):
@@ -64,9 +64,9 @@ def Delete(config_file):
     del profile_dict[profile_name]
     try:
         writeConfig(config_file, profile_dict)
-        print(f"Profile {profile_name} has been deleted from config file")
+        print(f"🗑️ Profile {profile_name} has been deleted from config file")
     except Exception as e:
-        print("Error in Deleting profile form config file", e)
+        print("😞 Error in Deleting profile form config file", e)
 
 
 def writeConfig(config_file, profile_dict):
