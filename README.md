@@ -17,7 +17,7 @@ official:
 ```
 
 Installation steps:
-```
+```bash
 git clone git@github.com:sakthimaan/gitsu.git
 cd gitsu
 pip3 install -r requirements.txt
