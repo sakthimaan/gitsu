@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from os import system, makedirs, listdir
 from os.path import expanduser, dirname, exists
 import yaml
