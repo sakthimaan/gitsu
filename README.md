@@ -15,3 +15,11 @@ official:
   user.email: official.account@mycompany.com
   user.ssh: id_ed25519_official
 ```
+
+Installation steps:
+```
+git clone git@github.com:sakthimaan/gitsu.git
+cd gitsu
+pip3 install -r requirements.txt
+./gitsu
+```
