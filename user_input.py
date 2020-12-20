@@ -4,6 +4,7 @@ from os import system
 
 
 def get_choice(prompt, choices):
+    screen_clear()
     cli = Bullet(
         prompt=f"\n{prompt}: ",
         choices=choices,
