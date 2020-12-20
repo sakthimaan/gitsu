@@ -1,18 +1,19 @@
-import os
+from os.path import expanduser, exists
 import re
 
+
 def parseSSHConfig(ssh_key_file_name):
-    ssh_config_file = os.path.expanduser("~/.ssh/config")
+    ssh_config_file = expanduser("~/.ssh/config")
     git_ssh_config = f'\
 Host github.com\n\
     User git\n\
     Hostname github.com\n\
-    IdentityFile {os.path.expanduser(f"~/.ssh/{ssh_key_file_name}")}\n'
+    IdentityFile {expanduser(f"~/.ssh/{ssh_key_file_name}")}\n'
     line_count = 1
     start_line = 0
     end_line = 0
     git_content = []
-    if not os.path.exists(ssh_config_file):
+    if not exists(ssh_config_file):
         print("~/.ssh/config file not found. Please create a profile to continue")
         exit(0)
     with open(file=ssh_config_file, mode="r") as file:

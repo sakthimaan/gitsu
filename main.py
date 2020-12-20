@@ -1,8 +1,8 @@
-import os
+from os import system, makedirs, listdir
+from os.path import expanduser, dirname, exists
 import yaml
 import user_input
 from parsesshconfig import parseSSHConfig
-from os import listdir
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 
@@ -11,8 +11,8 @@ def select(config_file):
     profileList, profile_dict = readConfig(config_file)
     result = user_input.get_choice("Select git account", profileList)
     try:
-        os.system(f"git config --global user.name \"{profile_dict[result]['user.name']}\"")
-        os.system(
+        system(f"git config --global user.name \"{profile_dict[result]['user.name']}\"")
+        system(
             f"git config --global user.email \"{profile_dict[result]['user.email']}\""
         )
         ssh_key = profile_dict[result]["user.ssh"]
@@ -23,7 +23,7 @@ def select(config_file):
 
 
 def create(config_file):
-    ssh_keys = listdir(os.path.expanduser("~/.ssh/"))
+    ssh_keys = listdir(expanduser("~/.ssh/"))
     print(ssh_keys)
     input()
     user_input.screen_clear()
@@ -39,12 +39,13 @@ def create(config_file):
     user_input.screen_clear()
     writeConfig(config_file, profile_dict)
 
+
 def Delete(config_file):
     profile_list, profile_dict = readConfig(config_file)
     toDelete = user_input.get_choice("Profile to Delete", profile_list)
     print(toDelete)
     del profile_dict[toDelete]
-    writeConfig(config_file,profile_dict)
+    writeConfig(config_file, profile_dict)
 
 
 def writeConfig(config_file, profile_dict):
@@ -55,7 +56,7 @@ def writeConfig(config_file, profile_dict):
 
 def readConfig(config_file):
     profileList = []
-    if os.path.exists(config_file):
+    if exists(config_file):
         with open(config_file) as file:
             profile_dict = yaml.load(file, Loader=yaml.FullLoader)
             file.close()
@@ -65,9 +66,9 @@ def readConfig(config_file):
 
 
 if __name__ == "__main__":
-    os.system("clear")
-    config_file = os.path.expanduser("~/.config/gitsu-py/config.yml")
-    os.makedirs(os.path.dirname(config_file), exist_ok=True)
+    system("clear")
+    config_file = expanduser("~/.config/gitsu-py/config.yml")
+    makedirs(dirname(config_file), exist_ok=True)
     choices = ["Select", "Create", "Update", "Delete"]
     crud = user_input.get_choice("User Choice", choices)
     print(crud)
