@@ -5,47 +5,68 @@ import user_input
 from parsesshconfig import parseSSHConfig
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit import PromptSession
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
 
 def select(config_file):
-    profileList, profile_dict = readConfig(config_file)
-    result = user_input.get_choice("Select git account", profileList)
+    profileList, _ = readConfig(config_file)
+    profile_name = user_input.get_choice("Select git account", profileList)
+    applyProfile(config_file, profile_name)
+
+
+def applyProfile(config_file, profile_name):
+    _, profile_dict = readConfig(config_file)
+    gitUser = profile_dict[profile_name]['user.name']
+    gitEmail = profile_dict[profile_name]['user.email']
+    ssh_key = profile_dict[profile_name]["user.ssh"]
     try:
-        system(f"git config --global user.name \"{profile_dict[result]['user.name']}\"")
+        system(f"git config --global user.name \"{gitUser}\"")
         system(
-            f"git config --global user.email \"{profile_dict[result]['user.email']}\""
+            f"git config --global user.email \"{gitEmail}\""
         )
-        ssh_key = profile_dict[result]["user.ssh"]
         if ssh_key:
             parseSSHConfig(ssh_key)
+        user_input.screen_clear()
+        print("git and ssh config has been updated. 🍻")
+        print(40 * "-")
+        print(f"Git:\n\t{gitUser}\n\t{gitEmail}\nssh:\n\t{ssh_key}")
     except Exception as e:
         print("Error in setting Git config values", e)
 
 
 def create(config_file):
+    session = PromptSession()
     ssh_keys = listdir(expanduser("~/.ssh/"))
-    print(ssh_keys)
-    input()
-    user_input.screen_clear()
     _, profile_dict = readConfig(config_file)
-    profile_name = input("Enter profile name")
     user_input.screen_clear()
+    profile_name = session.prompt('Enter Profile name: ', auto_suggest=AutoSuggestFromHistory())
     profile_dict[profile_name] = {}
-    profile_dict[profile_name]["user.name"] = input("\nEnter git username:\t")
-    user_input.screen_clear()
-    profile_dict[profile_name]["user.email"] = input("\nEnter git Email:\t")
-    user_input.screen_clear()
-    profile_dict[profile_name]["user.ssh"] = prompt('Enter git ssh key: ', completer=WordCompleter(ssh_keys))
-    user_input.screen_clear()
-    writeConfig(config_file, profile_dict)
+    profile_dict[profile_name]["user.name"] = session.prompt('    Enter git username: ',
+                                                             auto_suggest=AutoSuggestFromHistory())
+    profile_dict[profile_name]["user.email"] = session.prompt('    Enter git email: ',
+                                                              auto_suggest=AutoSuggestFromHistory())
+    profile_dict[profile_name]["user.ssh"] = prompt('    Enter git ssh key: ', completer=WordCompleter(ssh_keys))
+    try:
+        writeConfig(config_file, profile_dict)
+        toApply = input(f"Profile {profile_name} created. Do you want to apply[y]/n:")
+        if "n" in toApply.lower():
+            pass
+        if "y" in toApply.lower():
+            applyProfile(config_file, profile_name)
+    except Exception as e:
+        print("Error in updating the config and key", e)
 
 
 def Delete(config_file):
     profile_list, profile_dict = readConfig(config_file)
-    toDelete = user_input.get_choice("Profile to Delete", profile_list)
-    print(toDelete)
-    del profile_dict[toDelete]
-    writeConfig(config_file, profile_dict)
+    profile_name = user_input.get_choice("Profile to Delete", profile_list)
+    del profile_dict[profile_name]
+    try:
+        writeConfig(config_file, profile_dict)
+        print(f"Profile {profile_name} has been deleted from config file")
+    except Exception as e:
+        print("Error in Deleting profile form config file", e)
 
 
 def writeConfig(config_file, profile_dict):
@@ -56,12 +77,16 @@ def writeConfig(config_file, profile_dict):
 
 def readConfig(config_file):
     profileList = []
+    profile_dict = {}
     if exists(config_file):
         with open(config_file) as file:
             profile_dict = yaml.load(file, Loader=yaml.FullLoader)
             file.close()
-    for key in profile_dict:
-        profileList.append(key)
+    try:
+        for key in profile_dict:
+            profileList.append(key)
+    except TypeError as e:
+        profile_dict = {}
     return profileList, profile_dict
 
 

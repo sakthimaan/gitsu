@@ -35,8 +35,6 @@ Host github.com\n\
         git_content.append(line + "\n")
     del content[start_line - 1: end_line]
     content[start_line - 1: start_line - 1] = git_content
-    for line in content:
-        print(line, end="")
     with open(ssh_config_file, 'w+') as file:
         for line in content:
             file.write(line)
