@@ -12,7 +12,7 @@ def select(config_file):
     if os.path.exists(config_file):
         with open(config_file) as file:
             user_list = yaml.load(file, Loader=yaml.FullLoader)
-        print(type(user_list))
+            file.close()
     for key in user_list:
         gitsu_list.append(key)
     result = user_input.get_choice("Select git account", gitsu_list)
@@ -65,3 +65,5 @@ if __name__ == "__main__":
         select(config_file)
     if crud == "Create":
         create(config_file)
+    if crud == "Delete":
+        Delete()

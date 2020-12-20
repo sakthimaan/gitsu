@@ -1,7 +1,6 @@
 import os
 import re
 
-
 def parseSSHConfig(ssh_key_file_name):
     ssh_config_file = os.path.expanduser("~/.ssh/config")
     git_ssh_config = f'\
@@ -20,7 +19,7 @@ Host github.com\n\
         content = file.readlines()
         file.close()
         for line in content:
-            if "Host " in line:
+            if "Host " in line or line_count == len(content):
                 if start_line != 0:
                     end_line = line_count - 1
                 if re.match(r"^Host[\s]+github.com$", line):
