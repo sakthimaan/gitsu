@@ -1,7 +1,12 @@
 # gitsu
-Git user management written in python. 
+Git user management written in python, powered by prompt_toolkit.
+
+
 This script will store config in ~/.config/gitsu-py/config.yml and update the `~/.gitconfig` and `~/.ssh/config` file based on the config file.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sakthimaan/gitsu/main/examples/demo.svg">
+</p>
 
 *Example config file:*
 
