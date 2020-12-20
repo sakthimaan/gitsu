@@ -32,21 +32,11 @@ Host github.com\n\
         exit(0)
     for line in git_ssh_config.splitlines():
         git_content.append(line + "\n")
-    print(start_line, end_line)
     del content[start_line - 1: end_line]
-    print(content)
     content[start_line - 1: start_line - 1] = git_content
-    #
-    # for line in git_content:
-    #     print(line)
-    #
     for line in content:
         print(line, end="")
     with open(ssh_config_file, 'w+') as file:
         for line in content:
             file.write(line)
         file.close()
-
-
-if __name__ == "__main__":
-    parseSSHConfig("test123")
